@@ -1,5 +1,11 @@
 import express from "express";
 import { pool } from "./db.js";
+import type { RowDataPacket } from "mysql2";
+
+interface DexEntry extends RowDataPacket {
+  id: number;
+  name: string;
+}
 
 const app = express();
 const port = Number(process.env.PORT) || 8000;
@@ -13,6 +19,40 @@ app.get("/api/db-health", async (_req, res) => {
 
 app.get("/api/health", (_req, res) => {
   res.json({ status: "ok" });
+});
+
+app.get("/api/dex/:q", async (req, res) => {
+  try {
+    const query = req.params.q.trim().toLowerCase();
+    const asNum = Number(query);
+    const [rows] = await pool.execute<DexEntry[]>(
+      "SELECT id, name FROM dex ORDER BY id",
+    );
+    if (Number.isNaN(asNum)) {
+      for (const row of rows) {
+        if (row.name === query) {
+          res.json({ id: row.id, name: row.name });
+          return;
+        }
+      }
+      res.json({ error: "Query is not a number, nor a pokemon name." });
+      return;
+    } else {
+      for (const row of rows) {
+        if (row.id == asNum) {
+          res.json({ id: row.id, name: row.name });
+          return;
+        }
+      }
+      res.json({
+        error: "Query is a number, but no pokemon has that dex number.",
+      });
+      return;
+    }
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ error: "Database error" });
+  }
 });
 
 app.listen(port, "0.0.0.0", () => {
