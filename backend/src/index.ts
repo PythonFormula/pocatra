@@ -26,7 +26,7 @@ app.get("/api/dex/:q", async (req, res) => {
   const query = req.params.q.trim().toLowerCase();
   const asNum = Number(query);
   const [rows] = await pool.execute<DexEntry[]>(
-    "SELECT id, name FROM dex ORDER BY id",
+    "SELECT id, gen, name FROM dex ORDER BY id",
   );
   if (Number.isNaN(asNum)) {
     for (const row of rows) {
