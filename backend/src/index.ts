@@ -4,6 +4,7 @@ import type { RowDataPacket } from "mysql2";
 
 interface DexEntry extends RowDataPacket {
   id: number;
+  gen: number;
   name: string;
 }
 
@@ -31,7 +32,7 @@ app.get("/api/dex/:q", async (req, res) => {
     if (Number.isNaN(asNum)) {
       for (const row of rows) {
         if (row.name === query) {
-          res.json({ id: row.id, name: row.name });
+          res.json({ id: row.id, gen: row.gen, name: row.name });
           return;
         }
       }
@@ -40,7 +41,7 @@ app.get("/api/dex/:q", async (req, res) => {
     } else {
       for (const row of rows) {
         if (row.id == asNum) {
-          res.json({ id: row.id, name: row.name });
+          res.json({ id: row.id, gen: row.gen, name: row.name });
           return;
         }
       }
