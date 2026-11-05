@@ -1,5 +1,6 @@
 import { Route, Routes } from "react-router-dom";
 import logo from "./assets/logo.png";
+import { Dex } from "./Dex";
 
 export default function App() {
   return (
@@ -11,8 +12,13 @@ export default function App() {
         </span>
         <ul className="nav nav-underline">
           <li className="nav-item">
-            <a className="nav-link active" href="/">
+            <a className="nav-link" href="/">
               Cards
+            </a>
+          </li>
+          <li className="nav-item">
+            <a className="nav-link" href="/dex">
+              Dex
             </a>
           </li>
           <li className="nav-item">
@@ -23,6 +29,7 @@ export default function App() {
 
       <Routes>
         <Route path="/" element={<h1>Pocatra</h1>} />
+        <Route path="/dex" element={<Dex></Dex>}></Route>
         <Route path="*" element={<h1>404 - Page not found</h1>} />
       </Routes>
     </>
